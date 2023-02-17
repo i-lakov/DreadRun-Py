@@ -1,0 +1,9 @@
+level_height = 15
+tile_size = 56
+screen_width = 1200
+screen_height = level_height * tile_size
+damage_cooldown = 3       # seconds
+explosion_cooldown = 1.5  # seconds
+death_screen_delay = 1    # seconds
+player_start_pos = 2      # blocks
+enemy_move_time = 1       # seconds
