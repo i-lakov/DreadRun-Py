@@ -8,23 +8,22 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self, pos):
         super().__init__()
         self.import_assets()
-        self.frame_index = 0
-        self.animation_speed = 0.15
-        self.image = self.animations['idle'][self.frame_index]
+        self._frame_index = 0
+        self._animation_speed = 0.15
+        self.image = self._animations['idle'][self._frame_index]
         self.rect = self.image.get_rect(topleft = pos)
-        self.time_taken = False
-        self.time_started = 0
-        self.action = 1
+        self._time_taken = False
+        self._time_started = 0
+        self._action = 1
 
         # Movement
         self.direction = pygame.math.Vector2(0, 0)
-        self.default_speed = 2
         self.speed = 2
         self.gravity = 0.8
 
         # Animation related
-        self.status = 'idle'
-        self.right_face = True
+        self._status = 'idle'
+        self._right_face = True
         self.on_ground = False
         self.on_ceiling = False
         self.on_left = False
@@ -33,22 +32,22 @@ class Enemy(pygame.sprite.Sprite):
     """Helper function to import necessary textures."""
     def import_assets(self):
         path = 'assets/enemy/'
-        self.animations = {'idle': [], 'run': []}
+        self._animations = {'idle': [], 'run': []}
 
-        for animation in self.animations.keys():
+        for animation in self._animations.keys():
             full_path = path + animation
-            self.animations[animation] = import_folder(full_path)
+            self._animations[animation] = import_folder(full_path)
 
-    """Handles all the animations of enemy objects."""
+    """Handles all the _animations of enemy objects."""
     def animate(self):
-        animation = self.animations[self.status]
+        animation = self._animations[self._status]
 
-        self.frame_index += self.animation_speed
-        if self.frame_index >= len(animation):
-            self.frame_index = 0
+        self._frame_index += self._animation_speed
+        if self._frame_index >= len(animation):
+            self._frame_index = 0
         
-        sprite = animation[int(self.frame_index)]
-        if self.right_face:
+        sprite = animation[int(self._frame_index)]
+        if self._right_face:
             self.image = sprite
         else:
             flip_sprite = pygame.transform.flip(sprite, True, False)
@@ -80,31 +79,31 @@ class Enemy(pygame.sprite.Sprite):
             pass
         else:
             if self.direction.x != 0:
-                self.status = 'run'
+                self._status = 'run'
             else:
-                self.status = 'idle'
+                self._status = 'idle'
 
     def die(self):
         del(self)
 
     """AI-like behavior for enemy movement."""
     def generate_input(self):
-        if self.time_taken and time.time() - self.time_started > enemy_move_time:
-            self.time_taken = False
-            if self.action == 1:
+        if self._time_taken and time.time() - self._time_started > enemy_move_time:
+            self._time_taken = False
+            if self._action == 1:
                 self.direction.x = 1
-                self.right_face = False
-            elif self.action == 2:
+                self._right_face = False
+            elif self._action == 2:
                 self.direction.x = -1
-                self.right_face = True
-            elif self.action == 3:
+                self._right_face = True
+            elif self._action == 3:
                 self.direction.x = 0
 
-        elif not self.time_taken:
-            self.time_taken = True
-            self.time_started = time.time()
+        elif not self._time_taken:
+            self._time_taken = True
+            self._time_started = time.time()
 
-            self.action = random.randint(1, 3)
+            self._action = random.randint(1, 3)
 
     """Normal pygame update function, invoked every frame"""
     def update(self, offset):
